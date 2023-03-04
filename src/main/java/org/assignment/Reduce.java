@@ -1,5 +1,6 @@
 package org.assignment;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -19,9 +20,11 @@ public class Reduce extends Reducer<Text, Text, Text, IntWritable> {
 
     @Override
     protected void reduce(Text country, Iterable<Text> customerIDs, Context context) throws IOException, InterruptedException {
-        HashSet<Text> customerIDset = new HashSet<>();
+        HashSet<String> customerIDset = new HashSet<>();
         for (Text customerid : customerIDs) {
-            customerIDset.add(customerid);
+            if(!StringUtils.isNotBlank(customerid.toString()))
+                continue;
+            customerIDset.add(customerid.toString());
         }
 
         int size = customerIDset.size();
