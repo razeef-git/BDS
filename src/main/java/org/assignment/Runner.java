@@ -12,8 +12,9 @@ import java.io.IOException;
 public class Runner {
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "Runner");
+        conf.set("country",args[2]);
 
+        Job job = Job.getInstance(conf, "Runner");
         job.setJarByClass(Runner.class);
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);

@@ -2,7 +2,6 @@ package org.assignment;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
-import org.apache.commons.collections.ListUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -21,11 +20,6 @@ public class Map extends Mapper<LongWritable, Text, Text, Text>  {
     private final static int CUSTOMERID = 6;
     private final static int COUNTRY = 7;
 
-/*    @Override
-    protected void map(Text key, Text value, Mapper<Text, Text, Text, Text>.Context context) throws IOException, InterruptedException {
-        super.map(key, value, context);
-    }*/
-
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         System.out.println("Key is " + key);
@@ -34,7 +28,7 @@ public class Map extends Mapper<LongWritable, Text, Text, Text>  {
 
         String record = value.toString();
         CSVReader csvRecord = new CSVReader(new StringReader(record));
-        List<String[]> csvParsedLine = ListUtils.EMPTY_LIST;
+        List<String[]> csvParsedLine;
         try {
             csvParsedLine = csvRecord.readAll();
         } catch (CsvException e) {
@@ -54,7 +48,8 @@ public class Map extends Mapper<LongWritable, Text, Text, Text>  {
         System.out.println(invoice + " | " + stockcode + " | " + description + " | " + quantity +
                 " | " + invoicedate + " | " + price + " | " + customerid + " | " + country);
 
-       context.write(new Text(country), new Text(customerid));
+        if (country.equals(context.getConfiguration().get("country")))
+           context.write(new Text(country), new Text(customerid));
 
     }
 
